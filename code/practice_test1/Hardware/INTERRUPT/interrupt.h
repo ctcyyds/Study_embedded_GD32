@@ -1,0 +1,39 @@
+#ifndef __INTERRUPT_H
+#define __INTERRUPT_H
+
+#include "gd32f4xx.h"
+#include "gd32f4xx_exti.h"
+#include "systick.h"
+#include "led.h"
+#include "stdio.h"
+
+//控制LED8亮灭(LED_SW=P45=PD4)
+/*
+KEY4=P54=D0
+LED8=P20=PD5
+*/
+
+//按键时钟
+#define BSP_KEY_RCU     RCU_GPIOD
+//GPIO类型
+#define BSP_KEY_PORT GPIOD
+//引脚号
+#define BSP_KEY_PIN GPIO_PIN_0
+
+// 外部中断0
+#define BSP_KEY_EXTI_IRQN			 		EXTI0_IRQn
+// 外部中断端口资源
+#define BSP_KEY_EXTI_PORT_SOURCE 	EXTI_SOURCE_GPIOD
+// 外部中断引脚资源
+#define BSP_KEY_EXTI_PIN_SOURCE  	EXTI_SOURCE_PIN0
+//EXTI线号
+#define BSP_KEY_EXTI_LINE 				EXTI_0
+// 外部中断函数名
+#define BSP_KEY_EXTI_IRQHANDLER   EXTI0_IRQHandler
+
+//初始化引脚
+void key_interrupt_init(void);
+//获取按键状态
+void key_interrupt_run(void);
+
+#endif

@@ -1,0 +1,19 @@
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'D:\instal\Keill_MDK\ARM\ARMCC\Bin'
+Build target 'Target 1'
+compiling motor.c...
+..\Hardware\Motor\motor.h(11): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\Hardware\Motor\motor.c(17): warning:  #1-D: last line of file ends without a newline
+  }
+..\Hardware\Motor\motor.c(3): warning:  #177-D: function "motor_gpio_init"  was declared but never referenced
+  static void motor_gpio_init(void){
+..\Hardware\Motor\motor.c: 3 warnings, 0 errors
+compiling main.c...
+..\Hardware\Motor\motor.h(11): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\User\main.c: 1 warning, 0 errors
+linking...
+Program Size: Code=632 RO-data=460 RW-data=8 ZI-data=1024  
+FromELF: creating hex file...
+".\Objects\GD32F470.axf" - 0 Error(s), 4 Warning(s).
+Build Time Elapsed:  00:00:04

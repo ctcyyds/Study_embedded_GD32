@@ -1,0 +1,154 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¦ÌVision V5.38.0.0
+Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: ctc DELL, ccc, LIC=SDA0P-MU33I-EVR1R-KXB7W-R67J9-RLQG4
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Plus  Version: 5.38.0.0
+Toolchain Path:  D:\instal\Keill_MDK\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 6 (build 750)
+Assembler:       Armasm.exe V5.06 update 6 (build 750)
+Linker/Locator:  ArmLink.exe V5.06 update 6 (build 750)
+Library Manager: ArmAr.exe V5.06 update 6 (build 750)
+Hex Converter:   FromElf.exe V5.06 update 6 (build 750)
+CPU DLL:         SARMCM3.DLL V5.38.0.0
+Dialog DLL:      DCM.DLL V1.17.5.0
+Target DLL:      CMSIS_AGDI.dll V1.33.15.0
+Dialog DLL:      TCM.DLL V1.56.4.0
+ 
+<h2>Project:</h2>
+D:\GD32workspace\code\day8Snakes\Project\GD32F470.uvprojx
+Project File Date:  05/19/2023
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'D:\instal\Keill_MDK\ARM\ARMCC\Bin'
+Rebuild target 'Target 1'
+compiling systick.c...
+compiling gd32f4xx_it.c...
+compiling gd32f4xx_gpio.c...
+compiling gd32f4xx_adc.c...
+compiling gd32f4xx_rcu.c...
+compiling gd32f4xx_usart.c...
+compiling main.c...
+..\Hardware\USART\usart.h(25): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\Hardware\ADC\adc.h(24): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\Hardware\lcd\lcd.h(56): warning:  #1295-D: Deprecated declaration Lcd_Init - give arg types
+  void Lcd_Init();
+..\Hardware\lcd\lcd.h(58): warning:  #1295-D: Deprecated declaration Lcd_GetW - give arg types
+  uint16_t Lcd_GetW();
+..\Hardware\lcd\lcd.h(59): warning:  #1295-D: Deprecated declaration Lcd_GetH - give arg types
+  uint16_t Lcd_GetH();
+..\Hardware\gui\pic.h(8405): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\Hardware\KEY\key.h(91): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\Hardware\DAC\audio_source.h(17): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\Hardware\DAC\dac.h(39): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\User\main.c(31): warning:  #3170-D: use of a const variable in a constant expression is nonstandard in C
+  int CELLWIDTH = (int) (WINDOWWIDTH / CELLSIZE);
+..\User\main.c(31): warning:  #3170-D: use of a const variable in a constant expression is nonstandard in C
+  int CELLWIDTH = (int) (WINDOWWIDTH / CELLSIZE);
+..\User\main.c(32): warning:  #3170-D: use of a const variable in a constant expression is nonstandard in C
+  int CELLHEIGHT = (int) (WINDOWHEIGHT / CELLSIZE);
+..\User\main.c(32): warning:  #3170-D: use of a const variable in a constant expression is nonstandard in C
+  int CELLHEIGHT = (int) (WINDOWHEIGHT / CELLSIZE);
+..\User\main.c(326): warning:  #1-D: last line of file ends without a newline
+  //===================================================
+..\User\main.c: 14 warnings, 0 errors
+assembling startup_gd32f450_470.s...
+compiling gd32f4xx_exti.c...
+compiling gd32f4xx_spi.c...
+compiling gd32f4xx_syscfg.c...
+compiling gd32f4xx_dac.c...
+compiling gd32f4xx_misc.c...
+compiling gd32f4xx_timer.c...
+compiling system_gd32f4xx.c...
+compiling usart.c...
+..\Hardware\USART\usart.h(25): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\Hardware\USART\usart.c(71): warning:  #1-D: last line of file ends without a newline
+  }
+..\Hardware\USART\usart.c: 2 warnings, 0 errors
+compiling link.c...
+..\Hardware\Link\link.c(144): warning:  #1-D: last line of file ends without a newline
+  }
+..\Hardware\Link\link.c: 1 warning, 0 errors
+compiling adc.c...
+..\Hardware\ADC\adc.h(24): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\Hardware\ADC\adc.c(91): warning:  #1-D: last line of file ends without a newline
+  }
+..\Hardware\ADC\adc.c: 2 warnings, 0 errors
+compiling key.c...
+..\Hardware\KEY\key.h(91): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\Hardware\DAC\audio_source.h(17): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\Hardware\DAC\dac.h(39): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\Hardware\KEY\key.c(113): warning:  #1-D: last line of file ends without a newline
+  //===================================================
+..\Hardware\KEY\key.c: 4 warnings, 0 errors
+compiling Spi4.c...
+compiling Lcd.c...
+..\Hardware\lcd\Lcd.h(56): warning:  #1295-D: Deprecated declaration Lcd_Init - give arg types
+  void Lcd_Init();
+..\Hardware\lcd\Lcd.h(58): warning:  #1295-D: Deprecated declaration Lcd_GetW - give arg types
+  uint16_t Lcd_GetW();
+..\Hardware\lcd\Lcd.h(59): warning:  #1295-D: Deprecated declaration Lcd_GetH - give arg types
+  uint16_t Lcd_GetH();
+..\Hardware\lcd\Lcd.c: 3 warnings, 0 errors
+compiling Gui.c...
+..\Hardware\lcd\lcd.h(56): warning:  #1295-D: Deprecated declaration Lcd_Init - give arg types
+  void Lcd_Init();
+..\Hardware\lcd\lcd.h(58): warning:  #1295-D: Deprecated declaration Lcd_GetW - give arg types
+  uint16_t Lcd_GetW();
+..\Hardware\lcd\lcd.h(59): warning:  #1295-D: Deprecated declaration Lcd_GetH - give arg types
+  uint16_t Lcd_GetH();
+..\Hardware\gui\Gui.c(116): warning:  #186-D: pointless comparison of unsigned integer with zero
+            if (d1 < 0)
+..\Hardware\gui\Gui.c(129): warning:  #186-D: pointless comparison of unsigned integer with zero
+             if (d2 < 0) {
+..\Hardware\gui\Gui.c: 5 warnings, 0 errors
+compiling dac.c...
+..\Hardware\DAC\audio_source.h(17): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\Hardware\DAC\dac.h(39): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\Hardware\DAC\dac.c(116): warning:  #1-D: last line of file ends without a newline
+  }
+..\Hardware\DAC\dac.c: 3 warnings, 0 errors
+compiling audio_source.c...
+..\Hardware\DAC\audio_source.h(17): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\Hardware\DAC\audio_source.c(90050): warning:  #1-D: last line of file ends without a newline
+  };
+..\Hardware\DAC\audio_source.c: 2 warnings, 0 errors
+linking...
+Program Size: Code=8516 RO-data=638932 RW-data=68 ZI-data=2068  
+FromELF: creating hex file...
+".\Objects\GD32F470.axf" - 0 Error(s), 36 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: GigaDevice
+                https://gd32mcu.com/data/documents/pack/GigaDevice.GD32F4xx_DFP.3.0.3.pack
+                GigaDevice.GD32F4xx_DFP.3.0.3
+                GigaDevice GD32F4xx Series Device Support and Examples
+
+<h2>Collection of Component include folders:</h2>
+  D:/instal/MDK_Pack/GigaDevice/GD32F4xx_DFP/3.0.3/Device/F4XX/Include
+
+<h2>Collection of Component Files used:</h2>
+Build Time Elapsed:  00:00:10
+</pre>
+</body>
+</html>

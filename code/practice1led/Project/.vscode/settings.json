@@ -1,0 +1,9 @@
+{
+    "KeilAssistant.Project.ExcludeList": [
+        "template.uvproj",
+        "template.uvprojx"
+    ],
+    "files.associations": {
+        "led.h": "c"
+    }
+}

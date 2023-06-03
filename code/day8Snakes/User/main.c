@@ -1,0 +1,326 @@
+#include "gd32f4xx.h"
+#include "systick.h"
+#include <stdio.h>
+#include "main.h"
+#include "usart.h"
+#include "adc.h"
+#include "Gui.h"
+#include "pic.h"
+#include "key.h"
+#include "Lcd.h"
+#include "link.h"
+#include "dac.h"
+
+//*************************[游戏定义]*************************
+//深绿色
+#define DARK_GREEN (0x0320)
+//淡绿色
+#define LIGHT_GREEN (0x9772)
+
+//摇杆x初始值 左:4090 右:0
+int X_IN_VALUE = 1986;
+//摇杆y初始值 上:0 下:3990
+int Y_IN_VALUE = 2086;
+// 屏幕宽度
+const int WINDOWWIDTH = 220;
+// 屏幕高度
+const int WINDOWHEIGHT = 240;
+// 小方格的大小
+const int CELLSIZE = 20;
+//横向和纵向的方格个数
+int CELLWIDTH = (int) (WINDOWWIDTH / CELLSIZE);
+int CELLHEIGHT = (int) (WINDOWHEIGHT / CELLSIZE);
+
+//贪吃蛇的方向枚举
+enum Direction {
+    UP = 1, DOWN, LEFT, RIGHT
+};
+
+//苹果位置结构体
+struct ApplePosition {
+    int x;
+    int y;
+} apple_position;
+//贪吃蛇的方向
+int direction = RIGHT;
+
+//贪吃蛇的x和y的网格坐标
+SListNode *snake_xs;
+SListNode *snake_ys;
+//贪吃蛇删除的尾部的网格坐标(走的时候需要修改成黑色)
+int tail_x = -1;
+int tail_y = -1;
+//===================================================
+
+//*************************[方法声明]*************************
+//游戏欢迎页面
+void start_page(void);
+
+//游戏运行页面
+void run_page(void);
+
+//游戏结束页面
+void GameOver(void);
+
+//绘制网格
+void draw_grid(void);
+
+//苹果的随机地址
+void draw_apple_addr(void);
+
+//蛇的随机地址
+void draw_snake_addr(void);
+
+//绘制苹果
+void draw_apple(void);
+
+//绘制蛇
+void draw_worm(void);
+
+//游戏数据初始化
+void GameReset(void);
+//===================================================
+
+int main(void) {
+//*************************[基本配置]*************************
+    //NVIC优先级分组,配置一个全局就行  0~3   0~3
+    nvic_priority_group_set(NVIC_PRIGROUP_PRE2_SUB2);
+    systick_config();
+    usart_run();
+
+    //Rocker init
+    adc_config();
+    //Rocker scan
+    adc_key_scan();
+
+    //Key init
+    key_led_run();
+
+    //Lcd init
+    Lcd_Init();
+    //Music init
+    dac_audio_init(8000);
+    //Game homepage
+    start_page();
+    while (1) {
+        //The game runs page
+        run_page();
+        //Game end page
+        GameOver();
+    }
+}
+
+//*************************[游戏欢迎页面]*************************
+void start_page(void) {
+    //Picture display
+    LCD_ShowPicture((LCD_W - 240) / 2, 0, 240, 280, gImage_snakes);
+	start_play_audio(standby,sizeof(standby),0);
+    while (1) {			
+        printf("key:%d\n", key_B_pressed);
+        if (key_B_pressed == 1) {
+            return;
+        }
+    }
+}
+//===================================================
+
+//*************************[游戏运行页面]*************************
+void run_page(void) {
+    //游戏数据初始化
+    GameReset();
+    //黑色背景
+    LCD_Fill(0, 0, LCD_W, LCD_H, COLOR_BLACK);
+    //绘制网格
+    draw_grid();
+    //给苹果一个随机地址
+    draw_apple_addr();
+    //给蛇一个随机地址
+    draw_snake_addr();
+    //贪吃蛇移动的时候的新头位置
+    int newx = 0;
+    int newy = 0;
+    //循环渲染
+    while (1) {
+        //摇杆扫描
+        adc_key_scan();
+        //判断上下左右
+        if (abs(adcXValue - 1986) < 300 && adcYValue < 200 && direction != DOWN) {//上
+            direction = UP;
+        } else if (abs(adcXValue - 1986) < 300 && (3990 - adcYValue) < 200 && direction != UP) {//下
+            direction = DOWN;
+        } else if ((4090 - adcXValue) < 200 && abs(2086 - adcYValue) < 300 && direction != RIGHT) {//左
+            direction = LEFT;
+        } else if (adcXValue < 200 && abs(2086 - adcYValue) < 300 && direction != LEFT) {//右
+            direction = RIGHT;
+        }
+
+        //根据方向,添加一个新的蛇头,以这种方式来移动贪吃蛇
+        //需要插入的新的蛇头x和y坐标
+        if (direction == UP) {
+            newx = snake_xs->data;
+            newy = snake_ys->data - 1;
+        } else if (direction == DOWN) {
+            newx = snake_xs->data;
+            newy = snake_ys->data + 1;
+        } else if (direction == LEFT) {
+            newx = snake_xs->data - 1;
+            newy = snake_ys->data;
+        } else if (direction == RIGHT) {
+            newx = snake_xs->data + 1;
+            newy = snake_ys->data;
+        }
+        //插入新的蛇头在数组最前面
+        SListAddHead(&snake_xs, newx);
+        SListAddHead(&snake_ys, newy);
+
+        //检查贪吃蛇是否吃到苹果，若没吃到，则删除尾端，蛇身前进一格 apple_position
+        if ((snake_xs->data == apple_position.x) && (snake_ys->data == apple_position.y)) {
+            printf("eat a apple\n");
+            //再随机一个苹果的位置
+            draw_apple_addr();
+        } else {
+            //删除尾部
+            tail_x = SListDelTail(&snake_xs);
+            tail_y = SListDelTail(&snake_ys);
+        }
+
+        //检查贪吃蛇是否撞到撞到边界，即检查蛇头的坐标
+        if (snake_xs->data < 0 || snake_xs->data > CELLWIDTH - 1 || snake_ys->data < 0 ||
+                snake_ys->data > CELLHEIGHT - 1) {
+            return;
+        }
+
+        /*判断是否撞到自己*/
+        SListNode *x_node = snake_xs;
+        SListNode *y_node = snake_ys;
+        int x_head = x_node->data;
+        int y_head = y_node->data;
+        //检查贪吃蛇是否撞到自己，即检查蛇头的坐标是否等于蛇身的坐标
+        x_node = x_node->next;
+        y_node = y_node->next;
+        while (x_node != NULL) {
+            int x = x_node->data;
+            int y = y_node->data;
+            if (x == x_head && y == y_head) {
+                //撞到自己
+                return;
+            }
+            x_node = x_node->next;
+            y_node = y_node->next;
+        }
+
+        //绘制苹果
+        draw_apple();
+        //绘制蛇
+        draw_worm();
+        //睡眠,控制帧率
+        delay_1ms(600);
+    }
+}
+//===================================================
+
+//*************************[游戏结束页面]*************************
+void GameOver(void) {
+    //Character display
+    LCD_ShowString(50, 100, "Game Over", COLOR_WHITE, COLOR_BLACK, 32, 0);  // 显示32字符串
+    LCD_ShowString(35, 220, "Press a KEY_B to play!", COLOR_RED, COLOR_BLACK, 16, 0);  // 显示32字符串
+    while (1) {
+        printf("key:%d\n", key_B_pressed);
+        if (key_B_pressed == 1) {
+            return;
+        }
+    }
+}
+//===================================================
+
+//*************************[蛇和苹果的随机地址]*************************
+void draw_apple_addr(void) {
+    //给苹果一个随机位置
+    apple_position.x = rand() % CELLWIDTH;
+    apple_position.y = rand() % CELLHEIGHT;
+}
+
+void draw_snake_addr(void) {
+    // 随机初始化设置一个点作为贪吃蛇的起点
+    int startx = rand() % (CELLWIDTH - 6) + 5;
+    int starty = rand() % (CELLHEIGHT - 6) + 5;
+    //定义两个数组保存贪吃蛇的头部网格x和y坐标
+    snake_xs = SListCreateNode(startx);
+    snake_ys = SListCreateNode(starty);
+    //添加另外两个节点的x和y坐标
+    SListAddTail(&snake_xs, startx - 1);
+    SListAddTail(&snake_ys, starty);
+    SListAddTail(&snake_xs, startx - 2);
+    SListAddTail(&snake_ys, starty);
+}
+//===================================================
+
+//*************************[绘制网格]*************************
+void draw_grid(void) {
+    int x = 0, y = 0;
+    //竖线
+    for (x = 10; x <= LCD_W - 10; x += CELLSIZE) {
+        LCD_DrawLine(x, 20, x, LCD_H - 20, COLOR_WHITE);
+    }
+
+    //横线
+    for (y = 20; y <= LCD_H - 20; y += CELLSIZE) {
+        LCD_DrawLine(10, y, LCD_W - 10, y, COLOR_WHITE);
+    }
+}
+//===================================================
+
+//*************************[绘制苹果]*************************
+void draw_apple(void) {
+    //填充苹果对应的网格
+    int xs = apple_position.x * CELLSIZE + 11;
+    int ys = apple_position.y * CELLSIZE + 21;
+    LCD_Fill(xs, ys, xs + CELLSIZE - 2, ys + CELLSIZE - 2, COLOR_RED);
+}
+//===================================================
+
+//*************************[绘制蛇]*************************
+//绘制蛇的一个单元
+void draw_worm_ele(int x, int y) {
+    int xs = x * CELLSIZE + 11;
+    int ys = y * CELLSIZE + 21;
+
+    LCD_Fill(xs, ys, xs + CELLSIZE - 2, ys + CELLSIZE - 2, DARK_GREEN);
+    LCD_Fill(xs + 4, ys + 4, xs + CELLSIZE - 10, ys + CELLSIZE - 10, LIGHT_GREEN);
+}
+
+//绘制蛇的尾部(需要删除)
+void draw_worm_tail() {
+    int xs = tail_x * CELLSIZE + 10;
+    int ys = tail_y * CELLSIZE + 20;
+
+    LCD_Fill(xs + 2, ys + 2, xs + CELLSIZE - 2, ys + CELLSIZE - 2, COLOR_BLACK);
+}
+
+//绘制蛇
+void draw_worm(void) {
+    SListNode *x_head = snake_xs;
+    SListNode *y_head = snake_ys;
+    while (x_head != NULL && y_head != NULL) {
+        int x = x_head->data;
+        int y = y_head->data;
+        //绘制一个单元
+        draw_worm_ele(x, y);
+        //指向下一个节点
+        x_head = x_head->next;
+        y_head = y_head->next;
+    }
+    //绘制尾部的空元素
+    draw_worm_tail();
+}
+//===================================================
+
+//*************************[游戏重置]*************************
+void GameReset(void) {
+    snake_xs = NULL;
+    snake_ys = NULL;
+    tail_x = -1;
+    tail_y = -1;
+    direction = RIGHT;
+}
+//===================================================

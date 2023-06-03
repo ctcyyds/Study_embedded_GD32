@@ -1,0 +1,24 @@
+#include "gd32f4xx.h"
+#include "systick.h"
+#include <stdio.h>
+#include "main.h"
+#include "led.h"
+#include "dma.h"
+
+#include "Lcd.h"
+#include "Gui.h"
+#include "pic.h"
+
+int main(void)
+{
+	systick_config();
+	/* 扩展板 */
+Lcd_Init();// spi lcd初始化
+//	LCD_Fill(0,0,LCD_W,LCD_H,COLOR_BLACK);
+//	LCD_DrawLine(50,50,100,100,COLOR_RED);
+	//LCD_ShowPicture((LCD_W-222) / 2,0,222,60,gImage_a);         // 显示图片
+	 LCD_ShowString(200,200,"CTC",COLOR_RED,COLOR_BLACK,5,0);
+    while(1) {
+			
+    }
+}

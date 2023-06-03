@@ -1,0 +1,19 @@
+#include "gd32f4xx.h"
+#include "systick.h"
+#include <stdio.h>
+#include "main.h"
+#include "led.h"
+#include "pwm.h"
+
+int main()
+{
+	int i;
+		uint16_t hz[] = {523, 587, 659, 698, 784, 880, 494 * 2, 523 * 2};
+		for(i = 0; i < 8; i++){
+			pwm_run(hz[i]);
+			delay_1ms(250);
+		}
+    systick_config();
+    while(1) {
+    }
+}
